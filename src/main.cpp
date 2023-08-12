@@ -47,8 +47,9 @@ void loop() {
   //   }
   // }
   ledGame oyun;
+  oyun.oyunSetup();
   oyun.oyunBaslat();
-
+  Serial.println("deneme");
   
   delay(1000);
 }

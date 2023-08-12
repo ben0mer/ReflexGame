@@ -49,12 +49,19 @@ void ledGame::sensorOKU(int *result) {
   }
 }
 
+void ledGame::oyunSetup(){
+    int aktifLed = 0;
+    int puan = 0;
+}
+
 void ledGame::oyunBaslat() {
-    for (int i = 0; i < 5 ; i++){
-        int aktifLed = random(1, 17);
+    oyunDurumu = true;
+    for (int i = 0; i < 10 ; i++){
+        aktifLed = random(1, 17); // Üye değişkeni olarak güncellenmeli
         ledYAK(aktifLed);
         sensorFOCUS(aktifLed);
-        while (true){
+        baslangicZamani = millis(); // Başlangıç zamanını güncellemeli
+        while (oyunDurumu == true){
             unsigned long suankiZaman = millis();
             if (suankiZaman - baslangicZamani >= gecenZaman) {
                 ledSONDUR();
@@ -63,9 +70,11 @@ void ledGame::oyunBaslat() {
             if (digitalRead(sensor_STATE) == 1) {
                 ledSONDUR();
                 puan += 1;
-            break;
+                break;
             }
         }
     }
+    oyunDurumu = false;
     Serial.println(puan);
-    }
+    oyunSetup();
+}

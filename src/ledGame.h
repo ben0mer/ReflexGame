@@ -7,8 +7,9 @@ class ledGame {
   private:
     int aktifLed;
     int puan;
+    bool oyunDurumu;
     unsigned long baslangicZamani = 0;
-    unsigned long gecenZaman = 2000;
+    unsigned long gecenZaman = 3000;
     const int led_S0 = 10;
     const int led_S1 = 11;
     const int led_S2 = 12;
@@ -26,6 +27,7 @@ class ledGame {
     void ledSONDUR();
     void sensorFOCUS(int No);
     void sensorOKU(int *result);
+    void oyunSetup();
     void oyunBaslat();
 
 
