@@ -1,5 +1,6 @@
 #include "ledGame.h"
 
+LiquidCrystal_I2C lcd(0x20, 16, 2);
 void ledGame::ledYAK(int No) {
   No = No-1;
   bool S0 = bitRead(No, 0);
@@ -49,17 +50,27 @@ void ledGame::sensorOKU(int *result) {
   }
 }
 
-void ledGame::oyunSetup(){
-    int aktifLed = 0;
-    int puan = 0;
+void ledGame::ekranSetup() {
+  lcd.init();
+  lcd.backlight();
+}
+
+void ledGame::ekranaYazdir(int puan) {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Puan: ");
+  lcd.print(puan);
 }
 
 void ledGame::oyunBaslat() {
     oyunDurumu = true;
-    for (int i = 0; i < 10 ; i++){
+    puan = 0;
+    ekranSetup();
+    for (int i = 0; i < 5 ; i++){
         aktifLed = random(1, 17); // Üye değişkeni olarak güncellenmeli
         ledYAK(aktifLed);
         sensorFOCUS(aktifLed);
+        ekranaYazdir(puan);
         baslangicZamani = millis(); // Başlangıç zamanını güncellemeli
         while (oyunDurumu == true){
             unsigned long suankiZaman = millis();
@@ -75,6 +86,7 @@ void ledGame::oyunBaslat() {
         }
     }
     oyunDurumu = false;
+    ekranaYazdir(puan);
     Serial.println(puan);
-    oyunSetup();
+
 }

@@ -1,5 +1,8 @@
 #include <Arduino.h>
 #include "ledGame.h"
+
+
+
 const int led_S0 = 10;
 const int led_S1 = 11;
 const int led_S2 = 12;
@@ -24,6 +27,7 @@ void setup() {
   pinMode(sensor_S2, OUTPUT);
   pinMode(sensor_S3, OUTPUT);
   pinMode(sensor_STATE, INPUT);
+
   Serial.begin(9600);
 }
 
@@ -37,17 +41,7 @@ void loop() {
   //   Serial.print(sensorVerisi[i]);
   // }
 
-  // for (int i = 0; i < 16; i++) {
-  //   if (sensorVerisi[i] == 1) {
-  //     ledYAK(i+1);
-  //     break;
-  //   }
-  //   else {
-  //     ledSONDUR();
-  //   }
-  // }
   ledGame oyun;
-  oyun.oyunSetup();
   oyun.oyunBaslat();
   Serial.println("deneme");
   
