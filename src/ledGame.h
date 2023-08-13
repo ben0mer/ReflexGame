@@ -24,8 +24,17 @@ class ledGame {
     const int sensor_S3 = 6;
     const int sensor_STATE = 3;
 
+    const int analog_Buton = A1;
+    int analog_Buton_Degeri = 0;
+    int zorlukSeviyesi = 1;
+    int oyuncuSayisi = 1;
+    int oyunSuresi = 30;
+    int tusSayisi = 10;
+
   public:
+    enum Menu_States {BASLA, AYARLAR, GERI, ZORLUK, OYUNCU, TUS, SURE};
     int puan;
+    void ledGameSetup();
     void ledYAK(int No);
     void ledSONDUR();
     void sensorFOCUS(int No);
@@ -33,6 +42,14 @@ class ledGame {
     void oyunBaslat();
     void ekranaYazdir(int puan);
     void ekranSetup();
+    Menu_States menu();
+    Menu_States ayarlar();
+    Menu_States geri();
+    Menu_States zorluk();
+    Menu_States oyuncu();
+    Menu_States tus();
+    Menu_States sure();
+    int butonOKU();
 
 };
 
