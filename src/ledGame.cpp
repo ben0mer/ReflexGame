@@ -55,22 +55,94 @@ void ledGame::ekranSetup() {
   lcd.backlight();
 }
 
-void ledGame::ekranaYazdir(int puan) {
+void ledGame::ekranaYazdir(int puan, int i) {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Puan: ");
-  lcd.print(puan);
+  lcd.print("Puan        Tus");
+  lcd.setCursor(0, 1);
+  lcd.print("  "+String(puan)+"          "+String(tusSayisi-i));
 }
 
-void ledGame::oyunBaslat() {
+int ledGame::zorlukDelay(int zorlukSeviyesi) {
+  switch (zorlukSeviyesi)
+  {
+  case 1:
+    return 3000;
+    break;
+  case 2:
+    return 2000;
+    break;
+  case 3:
+    return 1500;
+    break;
+  case 4:
+    return 1000;
+    break;
+  case 5:
+    return 500;
+    break;
+  default:
+    return 3000;
+    break;
+  }
+}
+
+ledGame::Menu_States ledGame::skorTablosu(){
+  if (oyuncuSayisi == 1){
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("SKOR      BASARI");
+    lcd.setCursor(0, 1);
+    lcd.print(" "+String(puan)+"        "+String(puan*100/tusSayisi)+"%");
+    delay(3000);
+    return BASLA;
+  }
+  else {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("1. Oyuncu");
+    lcd.setCursor(0, 1);
+    lcd.print("Puan: "+String(puan));
+    delay(3000);
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("2. Oyuncu");
+    lcd.setCursor(0, 1);
+    lcd.print("Puan: "+String(puan));
+    delay(3000);
+    return BASLA;
+  }
+}
+
+void ledGame::oyunBasliyor() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(" OYUN BASLIYOR!");
+  lcd.setCursor(0, 1);
+  lcd.print("   Hazirlanin");
+  delay(1000);
+  lcd.clear();
+  lcd.print("        3");
+  delay(1000);
+  lcd.clear();
+  lcd.print("        2");
+  delay(1000);
+  lcd.clear();
+  lcd.print("        1");
+  delay(1000);
+}
+
+ledGame::Menu_States ledGame::oyunBaslat() {
     oyunDurumu = true;
     puan = 0;
     ekranSetup();
-    for (int i = 0; i < 5 ; i++){
+    oyunBasliyor();
+    gecenZaman = zorlukDelay(zorlukSeviyesi);
+    for (int i = 0; i < tusSayisi ; i++){
         aktifLed = random(1, 17); // Üye değişkeni olarak güncellenmeli
         ledYAK(aktifLed);
         sensorFOCUS(aktifLed);
-        ekranaYazdir(puan);
+        ekranaYazdir(puan, i);
         baslangicZamani = millis(); // Başlangıç zamanını güncellemeli
         while (oyunDurumu == true){
             unsigned long suankiZaman = millis();
@@ -86,9 +158,10 @@ void ledGame::oyunBaslat() {
         }
     }
     oyunDurumu = false;
-    ekranaYazdir(puan);
+    ekranaYazdir(puan, tusSayisi);
     Serial.println(puan);
-
+    delay(3000);
+    return SKOR;
 }
 
 
@@ -104,7 +177,7 @@ ledGame::Menu_States ledGame::menu() {
   int butonPressed = butonOKU();
   if (butonPressed == 3){
     Serial.println("Oyun Basladi");
-    return BASLA;
+    return OYUN;
   }
   else if (butonPressed == 4){
     return AYARLAR;

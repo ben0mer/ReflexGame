@@ -15,6 +15,12 @@ void loop(){
   
   switch (menu_State)
   {
+  case ledGame::SKOR:
+    menu_State = oyun.skorTablosu();
+    break;
+  case ledGame::OYUN:
+    menu_State = oyun.oyunBaslat();
+    break;
   case ledGame::BASLA:
     menu_State = oyun.menu();
     break;

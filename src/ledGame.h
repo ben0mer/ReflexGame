@@ -32,16 +32,19 @@ class ledGame {
     int tusSayisi = 10;
 
   public:
-    enum Menu_States {BASLA, AYARLAR, GERI, ZORLUK, OYUNCU, TUS, SURE};
+    enum Menu_States {BASLA, AYARLAR, GERI, ZORLUK, OYUNCU, TUS, SURE, OYUN, SKOR};
     int puan;
     void ledGameSetup();
     void ledYAK(int No);
     void ledSONDUR();
     void sensorFOCUS(int No);
     void sensorOKU(int *result);
-    void oyunBaslat();
-    void ekranaYazdir(int puan);
+    Menu_States oyunBaslat();
+    Menu_States skorTablosu();
+    void oyunBasliyor();
+    void ekranaYazdir(int puan, int i);
     void ekranSetup();
+    int zorlukDelay(int zorlukSeviyesi);
     Menu_States menu();
     Menu_States ayarlar();
     Menu_States geri();
