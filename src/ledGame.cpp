@@ -88,30 +88,133 @@ int ledGame::zorlukDelay(int zorlukSeviyesi) {
 }
 
 ledGame::Menu_States ledGame::skorTablosu(){
-  if (oyuncuSayisi == 1){
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("SKOR      BASARI");
+  lcd.setCursor(0, 1);
+  lcd.print(" "+String(puan1)+"        "+String(puan1*100/tusSayisi)+"%");
+  delay(3000);
+  return BASLA;
+}
+
+void ledGame::skorTablosu2(bool stage, int puan1, int puan2){
+  if (stage == true){
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("SKOR      BASARI");
     lcd.setCursor(0, 1);
-    lcd.print(" "+String(puan)+"        "+String(puan*100/tusSayisi)+"%");
+    lcd.print(" "+String(puan1)+"        "+String(puan1*100/tusSayisi)+"%");
     delay(3000);
-    return BASLA;
   }
   else {
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("1. Oyuncu");
+    lcd.print("SKOR      BASARI");
     lcd.setCursor(0, 1);
-    lcd.print("Puan: "+String(puan));
+    lcd.print(" "+String(puan2)+"        "+String(puan2*100/tusSayisi)+"%");
     delay(3000);
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("2. Oyuncu");
-    lcd.setCursor(0, 1);
-    lcd.print("Puan: "+String(puan));
-    delay(3000);
-    return BASLA;
   }
+}
+
+ledGame::Menu_States ledGame::genelSkor() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("OYUNCU 1 --> "+String(ledGame::puan1));
+  lcd.setCursor(0, 1);
+  lcd.print("OYUNCU 2 --> "+String(ledGame::puan2));
+  delay(3000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  if (puan1 > puan2){
+    lcd.print("KAZANAN OYUNCU 1");
+    lcd.setCursor(0, 1);
+    lcd.print("   TEBRIKLER!");
+  }
+  else if (puan1 < puan2) {
+    lcd.print("KAZANAN OYUNCU 2");
+    lcd.setCursor(0, 1);
+    lcd.print("   TEBRIKLER!");
+  }
+  else {
+    lcd.print("  KAZANAN YOK");
+    lcd.setCursor(0, 1);
+    lcd.print("   BERABERE!");
+  }
+  
+  delay(2000);
+  return BASLA;
+}
+
+ledGame::Menu_States ledGame::oyunBaslat2() {
+  oyunDurumu = true;
+  puan1 = 0;
+  puan2 = 0;
+  ekranSetup();
+  oyunBasliyor2(1);
+  gecenZaman = zorlukDelay(zorlukSeviyesi);
+  for (int i = 0; i < tusSayisi ; i++){
+      aktifLed = random(1, 17); // Üye değişkeni olarak güncellenmeli
+      ledYAK(aktifLed);
+      sensorFOCUS(aktifLed);
+      ekranaYazdir(puan1, i);
+      baslangicZamani = millis(); // Başlangıç zamanını güncellemeli
+      while (oyunDurumu == true){
+          unsigned long suankiZaman = millis();
+          if (suankiZaman - baslangicZamani >= gecenZaman) {
+              ledSONDUR();
+              break;
+          }
+          if (digitalRead(sensor_STATE) == 1) {
+              ledSONDUR();
+              puan1 += 1;
+              break;
+          }
+      }
+  }
+  ekranaYazdir(puan1, tusSayisi);
+  skorTablosu2(true, puan1, puan2);
+  oyunBasliyor2(2);
+  for (int i = 0; i < tusSayisi ; i++){
+    aktifLed = random(1, 17); // Üye değişkeni olarak güncellenmeli
+    ledYAK(aktifLed);
+    sensorFOCUS(aktifLed);
+    ekranaYazdir(puan2, i);
+    baslangicZamani = millis(); // Başlangıç zamanını güncellemeli
+    while (oyunDurumu == true){
+        unsigned long suankiZaman = millis();
+        if (suankiZaman - baslangicZamani >= gecenZaman) {
+            ledSONDUR();
+            break;
+        }
+        if (digitalRead(sensor_STATE) == 1) {
+            ledSONDUR();
+            puan2 += 1;
+            break;
+        }
+    }
+  }
+  ekranaYazdir(puan2, tusSayisi);
+  skorTablosu2(false, puan1, puan2);
+  oyunDurumu = false;
+  return SKOR2;
+}
+
+void ledGame::oyunBasliyor2(int stage) {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(" OYUN BASLIYOR!");
+  lcd.setCursor(0, 1);
+  lcd.print("    OYUNCU "+String(stage));
+  delay(1000);
+  lcd.clear();
+  lcd.print("        3");
+  delay(1000);
+  lcd.clear();
+  lcd.print("        2");
+  delay(1000);
+  lcd.clear();
+  lcd.print("        1");
+  delay(1000);
 }
 
 void ledGame::oyunBasliyor() {
@@ -134,7 +237,7 @@ void ledGame::oyunBasliyor() {
 
 ledGame::Menu_States ledGame::oyunBaslat() {
     oyunDurumu = true;
-    puan = 0;
+    puan1 = 0;
     ekranSetup();
     oyunBasliyor();
     gecenZaman = zorlukDelay(zorlukSeviyesi);
@@ -142,7 +245,7 @@ ledGame::Menu_States ledGame::oyunBaslat() {
         aktifLed = random(1, 17); // Üye değişkeni olarak güncellenmeli
         ledYAK(aktifLed);
         sensorFOCUS(aktifLed);
-        ekranaYazdir(puan, i);
+        ekranaYazdir(puan1, i);
         baslangicZamani = millis(); // Başlangıç zamanını güncellemeli
         while (oyunDurumu == true){
             unsigned long suankiZaman = millis();
@@ -152,14 +255,14 @@ ledGame::Menu_States ledGame::oyunBaslat() {
             }
             if (digitalRead(sensor_STATE) == 1) {
                 ledSONDUR();
-                puan += 1;
+                puan1 += 1;
                 break;
             }
         }
     }
     oyunDurumu = false;
-    ekranaYazdir(puan, tusSayisi);
-    Serial.println(puan);
+    ekranaYazdir(puan1, tusSayisi);
+    Serial.println(puan1);
     delay(3000);
     return SKOR;
 }

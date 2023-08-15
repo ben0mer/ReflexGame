@@ -27,13 +27,15 @@ class ledGame {
     const int analog_Buton = A1;
     int analog_Buton_Degeri = 0;
     int zorlukSeviyesi = 1;
-    int oyuncuSayisi = 1;
+    
     int oyunSuresi = 30;
     int tusSayisi = 10;
 
   public:
-    enum Menu_States {BASLA, AYARLAR, GERI, ZORLUK, OYUNCU, TUS, SURE, OYUN, SKOR};
-    int puan;
+    enum Menu_States {BASLA, AYARLAR, GERI, ZORLUK, OYUNCU, TUS, SURE, OYUN, SKOR, SKOR2};
+    int oyuncuSayisi = 1;
+    int puan1;
+    int puan2;
     void ledGameSetup();
     void ledYAK(int No);
     void ledSONDUR();
@@ -41,6 +43,10 @@ class ledGame {
     void sensorOKU(int *result);
     Menu_States oyunBaslat();
     Menu_States skorTablosu();
+    Menu_States oyunBaslat2();
+    Menu_States genelSkor();
+    void skorTablosu2(bool stage, int puan1, int puan2);
+    void oyunBasliyor2(int stage);
     void oyunBasliyor();
     void ekranaYazdir(int puan, int i);
     void ekranSetup();
